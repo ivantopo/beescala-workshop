@@ -4,12 +4,14 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
+import kamon.Kamon
 import kamon.apm.demo.api.api.Routes
 
 import scala.concurrent.ExecutionContext
 
 
 object Launcher extends App {
+  Kamon.init()
   val config = ConfigFactory.load()
   val serviceName = config.getString("kamon.environment.service")
 
@@ -18,9 +20,9 @@ object Launcher extends App {
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   val routes = Routes.routes(
-    balancerAddress = config.getString("api.balancer.address"),
-    prefix = config.getString("api.balancer.prefix"))
+    bouncerAddress = config.getString("api.services.bouncer"),
+    conciergeAddress = config.getString("api.services.concierge"))
 
-  val bindingFuture = Http(system).bindAndHandle(routes, "0.0.0.0", 8080)
+  val bindingFuture = Http(system).bindAndHandle(routes, "0.0.0.0", 8090)
 
 }

@@ -2,7 +2,6 @@ package controllers
 
 import components.KeyStorage
 import javax.inject._
-import kamon.Kamon
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext
@@ -18,8 +17,6 @@ class OrganizationController @Inject()(keyStorage: KeyStorage, cc: ControllerCom
     * Retrieves all keys for an organization
     */
   def keys(organizationID: Long) = Action.async { implicit request: Request[AnyContent] =>
-    Kamon.currentSpan().name("GET /organizations/:id/keys")
-
     spiceUp {
       keyStorage.list(organizationID)
         .map(keys => Ok(keyListToJson(organizationID, keys)))
@@ -30,10 +27,6 @@ class OrganizationController @Inject()(keyStorage: KeyStorage, cc: ControllerCom
     * Create a new key for an organization
     */
   def create(organizationID: Long) = Action.async { implicit request: Request[AnyContent] =>
-    Kamon.currentSpan()
-      .name("POST /organizations/:id/keys")
-      .tag("organizationID", organizationID)
-
     keyStorage.create(organizationID)
       .map(key => Ok(keyToJson(key)))
   }
@@ -42,11 +35,6 @@ class OrganizationController @Inject()(keyStorage: KeyStorage, cc: ControllerCom
     * Revoke an API key if it exists
     */
   def revoke(organizationID: Long, key: String) = Action.async { implicit request: Request[AnyContent] =>
-    Kamon.currentSpan()
-      .name("DELETE /organizations/:id/keys")
-      .tag("bouncer.organization_id", organizationID)
-      .tag("bouncer.revoked_key", key)
-
     keyStorage.revoke(organizationID, key).map(revoked => {
       if(revoked)
         Ok

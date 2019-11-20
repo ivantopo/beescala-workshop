@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" debug="false">
-<!--  <conversionRule conversionWord="traceID" converterClass="kamon.instrumentation.logback.tools.TraceIDConverter"/>-->
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5level | %m%n</pattern>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5level | %thread | %m%n</pattern>
     </encoder>
   </appender>
+
+  <logger name="oshi" level="OFF" />
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>

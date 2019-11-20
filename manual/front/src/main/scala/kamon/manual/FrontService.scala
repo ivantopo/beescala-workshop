@@ -7,6 +7,7 @@ import akka.http.scaladsl.server.{Directives, Route}
 import akka.stream.ActorMaterializer
 
 import scala.concurrent.{ExecutionContext, Future}
+import org.slf4j.LoggerFactory
 
 object FrontService extends App {
   implicit val system = ActorSystem("front-service")
@@ -16,6 +17,7 @@ object FrontService extends App {
 }
 
 object FrontServiceAPI extends Directives with RequestBuilding {
+  val logger = LoggerFactory.getLogger("front")
 
   def routes()(implicit system: ActorSystem): Route = {
     import system.dispatcher
@@ -24,7 +26,7 @@ object FrontServiceAPI extends Directives with RequestBuilding {
       path("status") {
         complete("ok")
       } ~
-      path("future") {
+      path("future" / Segment) { seg =>
         complete(future())
       } ~
       path("external") {

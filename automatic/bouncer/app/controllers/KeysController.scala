@@ -2,7 +2,6 @@ package controllers
 
 import components.KeyStorage
 import javax.inject._
-import kamon.Kamon
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext
@@ -18,10 +17,6 @@ class KeysController @Inject()(keyStorage: KeyStorage, cc: ControllerComponents,
     * Gets a key from storage
     */
   def get(id: String) = Action.async { implicit request: Request[AnyContent] =>
-    Kamon.currentSpan()
-      .name("GET /keys")
-      .tag("bouncer.key", id)
-
     spiceUp {
       keyStorage.retrieve(id).map(keyOption => {
         keyOption

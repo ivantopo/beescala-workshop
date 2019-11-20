@@ -11,6 +11,7 @@ import com.google.common.net.HostAndPort
 import com.orbitz.consul.Consul
 import com.orbitz.consul.option.ImmutableQueryOptions
 import com.typesafe.config.ConfigFactory
+import kamon.Kamon
 import kamon.apm.demo.concierge.api.Routes
 import kamon.apm.demo.concierge.manager.CityEntity
 import org.slf4j.LoggerFactory

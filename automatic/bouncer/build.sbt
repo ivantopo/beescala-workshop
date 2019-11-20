@@ -1,8 +1,7 @@
 import com.typesafe.sbt.packager.docker.{DockerChmodType, DockerPermissionStrategy}
-import kamon.instrumentation.sbt.SbtKanelaRunner.Keys.kanelaVersion
 import scala.sys.process.Process
 
-name := "apm-demo.bouncer"
+name := "workshop-bouncer"
 organization := "io.kamon"
 version := "1.0-SNAPSHOT"
 
@@ -27,7 +26,6 @@ javaOptions in Universal ++= Seq(
 )
 
 resolvers += Resolver.mavenLocal
-resolvers += Resolver.bintrayRepo("kamon-io", "snapshots")
 resolvers += Resolver.bintrayRepo("kamon-io", "releases")
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "3.0.0",

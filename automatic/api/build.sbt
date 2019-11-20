@@ -4,7 +4,7 @@ import scala.sys.process.Process
 
 enablePlugins(JavaAppPackaging, DockerPlugin)
 
-name := "apm-demo.api"
+name := "workshop-api"
 organization := "io.kamon"
 organizationName := "Kamon APM"
 scalaVersion := "2.12.8"
@@ -27,5 +27,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"   %% "akka-stream"            % "2.5.22",
   "com.typesafe.akka"   %% "akka-slf4j"             % "2.5.22",
   "com.h2database"      %  "h2"                     % "1.3.148",
-  "ch.qos.logback"      %  "logback-classic"        % "1.2.3"
+  "ch.qos.logback"      %  "logback-classic"        % "1.2.3",
 )

@@ -18,20 +18,20 @@ object Routes extends Directives with Serialization with RequestBuilding {
   private val _log = LoggerFactory.getLogger("kamon.apm.demo.api.api.Routes")
   private implicit val _timeout = Timeout(2 seconds)
 
-  def routes(balancerAddress: String, prefix: String)(implicit system: ActorSystem, mat: Materializer): Route = {
+  def routes(bouncerAddress: String, conciergeAddress: String)(implicit system: ActorSystem, mat: Materializer): Route = {
     import system.dispatcher
 
-    def sendGet(path: String): Future[HttpResponse] =
-      Http().singleRequest(Get(s"http://$balancerAddress/$prefix$path")).map(cleanupHeaders)
+    def sendGet(address: String): Future[HttpResponse] =
+      Http().singleRequest(Get(address)).map(cleanupHeaders)
 
-    def sendPost(path: String, entity: RequestEntity): Future[HttpResponse] =
-      Http().singleRequest(Post(s"http://$balancerAddress/$prefix$path", entity)).map(cleanupHeaders)
+    def sendPost(address: String, entity: RequestEntity): Future[HttpResponse] =
+      Http().singleRequest(Post(address, entity)).map(cleanupHeaders)
 
     def cleanupHeaders(response: HttpResponse): HttpResponse =
       response.withHeaders(response.headers.filterNot(_.name().toLowerCase.startsWith("x-b3")))
 
     def validateKey(key: String): Future[HttpResponse] =
-      Http().singleRequest(Get(s"http://localhost:9000/bouncer/keys/$key")).map(cleanupHeaders)
+      Http().singleRequest(Get(s"http://${bouncerAddress}/bouncer/keys/$key")).map(cleanupHeaders)
 
     // We only forward the request to the API if we get a 200 from the key validation,
     // otherwise we use the same response that we got from bouncer.
@@ -45,16 +45,17 @@ object Routes extends Directives with Serialization with RequestBuilding {
     }
 
     def getCityEvents(apiKey: String, cityID: String): Future[HttpResponse] =
-      withValidKey(apiKey, sendGet(s"/concierge/cities/$cityID/events"))
+      withValidKey(apiKey, sendGet(s"http://${conciergeAddress}/concierge/cities/$cityID/events"))
 
     def getEvent(apiKey: String, eventID: String): Future[HttpResponse] =
-      withValidKey(apiKey, sendGet(s"/concierge/events/$eventID"))
+      withValidKey(apiKey, sendGet(s"http://${conciergeAddress}/concierge/events/$eventID"))
 
     def getReservations(apiKey: String, eventID: String): Future[HttpResponse] =
-      withValidKey(apiKey, sendGet(s"/concierge/events/$eventID/reservations"))
+      withValidKey(apiKey, sendGet(s"http://${conciergeAddress}/concierge/events/$eventID/reservations"))
 
     def postReservation(apiKey: String, eventID: String, seatCount: Int): Future[HttpResponse] =
-      withValidKey(apiKey, sendPost(s"/concierge/events/$eventID/reservations", Strict(ContentTypes.`text/plain(UTF-8)`, ByteString(seatCount.toString))))
+      withValidKey(apiKey, sendPost(s"http://${conciergeAddress}/concierge/events/$eventID/reservations",
+        Strict(ContentTypes.`text/plain(UTF-8)`, ByteString(seatCount.toString))))
 
     /**
       * The available routes are:

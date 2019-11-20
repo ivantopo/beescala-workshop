@@ -1,7 +1,6 @@
 package components
 
 import javax.inject.Inject
-import kamon.Kamon._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 

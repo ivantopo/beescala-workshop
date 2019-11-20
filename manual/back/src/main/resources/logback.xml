@@ -8,6 +8,8 @@
     </encoder>
   </appender>
 
+  <logger name="oshi" level="OFF" />
+
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>

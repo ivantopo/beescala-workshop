@@ -6,7 +6,7 @@ import scala.sys.process.Process
 
 enablePlugins(JavaAppPackaging, DockerPlugin)
 
-name := "apm-demo.concierge"
+name := "workshop-concierge"
 organization := "io.kamon"
 organizationName := "Kamon APM"
 scalaVersion := "2.12.8"
@@ -36,5 +36,5 @@ libraryDependencies ++= Seq(
 
   "com.h2database"      %  "h2"                     % "1.3.148",
   "ch.qos.logback"      %  "logback-classic"        % "1.2.3",
-  "com.orbitz.consul"   %  "consul-client"          % "1.3.5"
+  "com.orbitz.consul"   %  "consul-client"          % "1.3.5",
 )

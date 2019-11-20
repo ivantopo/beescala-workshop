@@ -16,8 +16,6 @@ object Model {
     capacity: Int
   )
 
-
-
   case class Reservation(
     id: String,
     eventID: String,

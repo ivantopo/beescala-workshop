@@ -45,7 +45,7 @@ object FrontServiceAPI extends Directives with RequestBuilding {
   }
 
   private def removePunctuation(input: String): String = {
-    input.filter(_.isLetterOrDigit)
+    input.filter(c => c.isLetterOrDigit || c.isWhitespace)
   }
 
   private def countWords(input: String): Long = {

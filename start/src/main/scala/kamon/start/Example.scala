@@ -3,15 +3,20 @@ package kamon.start
 import java.time.Duration
 import java.util.concurrent.Executors
 
+import com.typesafe.config.Config
 import kamon.Kamon
 import kamon.context.Context
 import kamon.metric.MeasurementUnit
+import kamon.module.SpanReporter
 import kamon.tag.Lookups._
 import kamon.trace.Span
 
 import scala.concurrent.ExecutionContext
 
 object Example extends App {
+  Kamon.loadModules()
+  Kamon.registerModule("super-reporter", new SuperReporter)
+
   //  val MyContextEntryKey = Context.key
 
   val span = Kamon.spanBuilder("Hello").start()
@@ -28,6 +33,7 @@ object Example extends App {
     println("Request ID: " + ctx.getTag(plain("request.id")))
     //    }
   }
+  span.finish()
   println("After: " + Kamon.currentContext())
 
   val MyCounter = Kamon.counter("my-counter")
@@ -56,5 +62,17 @@ object Example extends App {
 
   Kamon.scheduler().shutdown()
 
+//  Kamon.stopModules()
+}
 
+// visit localhost:5266 for the status page
+
+class SuperReporter extends SpanReporter {
+  override def reportSpans(spans: Seq[Span.Finished]): Unit = {
+    spans.foreach(println)
+  }
+
+  override def stop(): Unit = {}
+
+  override def reconfigure(newConfig: Config): Unit = {}
 }
